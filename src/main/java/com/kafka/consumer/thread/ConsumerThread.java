@@ -20,11 +20,10 @@ import scala.collection.mutable.SynchronizedSet;
 public class ConsumerThread implements Runnable {
 
 
-    private static MongoCollection<Document> coll = MongoDBUtil.instance.getCollection("mongodb-test", "logs");
+    private  MongoCollection<Document> coll = MongoDBUtil.instance.getCollection("mongodb-test", "logs");
 
     private static int index = 0;
 
-    private final Object lock = new Object();
 
     private static Logger log = Logger.getLogger(ConsumerThread.class);
 
@@ -60,9 +59,9 @@ public class ConsumerThread implements Runnable {
 
             String messageT = new String(message.message());
             log.info(Thread.currentThread().getName() + "  接收到: " + messageT + "来自于topic：[" + topic + "] + 第partition[  " + partition + "  ]" + "   key = " + message.key());
-            synchronized(lock) {
+            synchronized(ConsumerThread.class) {
                 Document bson = new Document();
-                bson.put("id", index++);
+                bson.put("id", ConsumerThread.index++);
                 bson.put("content", messageT);
                 coll.insertOne(bson);
             /*
