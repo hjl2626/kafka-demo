@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:annotation-config/>
+
+    <!--<context:component-scan base-package="com.kafka"/>-->
+
+    <context:property-placeholder location="classpath*:log4j.properties" ignore-unresolvable="true"/>
+
+    <context:property-placeholder location="classpath*:mongodb.properties" ignore-unresolvable="true"/>
+
+    <import resource="classpath*:spring-consumer.xml"/>
+    <!--<import resource="classpath*:spring-producer.xml"/>-->
+    <!--<import resource="spring-mongodb-test.xml"/>-->
+
+</beans>
