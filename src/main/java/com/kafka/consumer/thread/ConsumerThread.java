@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ConsumerThread implements Runnable {
 
 
-    private  MongoCollection<Document> coll = MongoDBUtil.instance.getCollection("mongodb-test", "logs");
+//    private  MongoCollection<Document> coll = MongoDBUtil.instance.getCollection("mongodb-test", "logs");
 
     private static AtomicLong index = new AtomicLong();
 
@@ -60,10 +60,10 @@ public class ConsumerThread implements Runnable {
 
             String messageT = new String(message.message());
             log.info(Thread.currentThread().getName() + "  接收到: " + messageT + "来自于topic：[" + topic + "] + 第partition[  " + partition + "  ]" + "   key = " + message.key());
-                Document bson = new Document();
-                bson.put("id", ConsumerThread.index.getAndIncrement());
-                bson.put("content", messageT);
-                coll.insertOne(bson);
+//                Document bson = new Document();
+//                bson.put("id", ConsumerThread.index.getAndIncrement());
+//                bson.put("content", messageT);
+//                coll.insertOne(bson);
             /*
              * 这里需要选择一种 "合适的存储方案"
              * */

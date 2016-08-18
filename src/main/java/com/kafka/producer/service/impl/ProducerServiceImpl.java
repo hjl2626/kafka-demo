@@ -116,11 +116,11 @@ public class ProducerServiceImpl implements ProducerSevice{
     /* (non-Javadoc)
      * @see test.interrupter.producer.ProducerServiceImpl#senderMessage(java.lang.String)
      */
-    public void sendeMessage(String message) {
+    public void sendeMessage(int index,String message) {
         // 创建和发送消息
-        ProducerRecord<String,String> producerRecord = new ProducerRecord<String, String>(this.topicName,message,message);
+        ProducerRecord<String,String> producerRecord = new ProducerRecord<String, String>(this.topicName,index,message,message);
         this.producer.send(producerRecord);
-        log.info("===================================>>>>>>>>>>>     发送 message= " + message);
+        log.info("===================================>>>>>>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + message);
     }
 
     public void destroy(){
@@ -176,7 +176,7 @@ public class ProducerServiceImpl implements ProducerSevice{
 //    }
 
     /**
-     * @param partitionNumber the partitionNumber to set
+     * 
      */
 //    public void setPartitionNumber(Integer partitionNumber) {
 //        this.partitionNumber = partitionNumber;

@@ -79,8 +79,8 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
 //        list.add("192.168.109.136:9092");
 //
 //        props.put("bootstrap.servers", list);
-//        props.put("auto.offset.reset", "largest");
-        props.put("auto.offset.reset", "largest");
+        props.put("auto.offset.reset", "smallest");
+//        props.put("auto.offset.reset", this.kafka.consumer.auto.offset.reset);
         props.put("zookeeper.connection.timeout.ms", this.zookeeper_timeout.toString());
         props.put("group.id", this.groupName);
 

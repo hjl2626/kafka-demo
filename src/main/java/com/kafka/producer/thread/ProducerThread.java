@@ -16,15 +16,17 @@ public class ProducerThread implements Runnable {
 
     private String message;
 
+    private int sleepTime;
+
 
     public void run() {
         int index = 0;
         log.info("=================================   " + Thread.currentThread().getName() + "  run");
         while(true) {
-            this.producerServiceImpl.sendeMessage(Thread.currentThread().getName() + "--->" +new Date().toString());
+            this.producerServiceImpl.sendeMessage(index % 50,Thread.currentThread().getName() + "--->" +new Date().toString());
             try {
                 log.info("=================================sleep 3 second");
-                Thread.sleep(3000);
+                Thread.sleep(this.sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -47,5 +49,13 @@ public class ProducerThread implements Runnable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getSleepTime() {
+        return sleepTime;
+    }
+
+    public void setSleepTime(int sleepTime) {
+        this.sleepTime = sleepTime;
     }
 }

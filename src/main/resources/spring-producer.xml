@@ -28,6 +28,7 @@
     <bean id="producerThread" class="com.kafka.producer.thread.ProducerThread" scope="prototype">
         <!--<property name="message" value="${kafka.producer.message}"/>-->
         <property name="producerServiceImpl" ref="producerService"/>
+        <property name="sleepTime" value="100" />
      </bean>
 
     <!--
@@ -35,8 +36,8 @@
     因为只会有10个生产者，所以线程池的大小是固定的，也无需使用无限队列
     -->
     <bean id="producerPool" scope="singleton" class="java.util.concurrent.ThreadPoolExecutor">
-        <constructor-arg value="20" type="int"/>
-        <constructor-arg value="20" type="int"/>
+        <constructor-arg value="100" type="int"/>
+        <constructor-arg value="100" type="int"/>
         <constructor-arg value="10000" type="long"/>
         <constructor-arg value="MILLISECONDS" type="java.util.concurrent.TimeUnit"/>
         <constructor-arg ref="threadCacheQueue"/>
