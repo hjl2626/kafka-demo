@@ -27,11 +27,11 @@ public class KafkaConsumer {
         // 这里我们设置几个关键属性
         Properties props = new Properties();
         // zookeeper相关的，如果有多个zk节点，这里以“,”进行分割
-        props.put("zookeeper.connect", "192.168.109.130:2181/kafka-1");
+        props.put("zookeeper.connect", "192.168.109.130:2181");
         props.put("zookeeper.connection.timeout.ms", "10000");
         // 还记得上文的说明吗：对于一个topic而言，同一用户组内的所有用户只被允许访问一个分区。
         // 所以要让多个Consumer实现对一个topic的负载均衡，每个groupid的名称都要一样
-        String groupname = "group1";
+        String groupname = "group";
         props.put("group.id", groupname);
 
         //==============

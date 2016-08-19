@@ -33,7 +33,7 @@ public class ConsumerTest {
     @Test
     public void test(){
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.109.130:9092,192.168.109.135:9092,192.168.109.136:9092");
+        props.put("bootstrap.servers", "192.168.109.130:9092");
         props.put("group.id", "consumerGroup2");
         props.put("auto.offset.reset", "earliest");
         props.put("enable.auto.commit", "true");  //自动commit

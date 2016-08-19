@@ -4,14 +4,12 @@ import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.kafka.consumer.thread.ConsumerThread;
+import kafka.consumer.*;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 
 /**
@@ -31,7 +29,7 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
     /**
      * zookeeper连接超时事件
      */
-    private Long zookeeper_timeout;
+    private String zookeeper_timeout;
 
     /**
      * 分区数量
@@ -45,11 +43,25 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
      */
     private ThreadPoolExecutor consumerPool;
 
-
-
+    /**
+     * topicName
+     */
     private String topicName;
 
+    /**
+     * groupName
+     */
     private String groupName;
+
+    /**
+     * autoCommitIntervalMs  offset
+     */
+    private String autoCommitIntervalMs;
+
+    /**
+     * autoOffsetReset
+     */
+    private String autoOffsetReset;
 
     /* (non-Javadoc)
      * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
@@ -73,26 +85,19 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
         // ==============首先各种连接属性
         Properties props = new Properties();
         props.put("zookeeper.connect", this.zookeeper_connects);
-//        List list = new ArrayList();
-//        list.add("192.168.109.130:9092");
-//        list.add("192.168.109.135:9092");
-//        list.add("192.168.109.136:9092");
-//
-//        props.put("bootstrap.servers", list);
-        props.put("auto.offset.reset", "smallest");
-//        props.put("auto.offset.reset", this.kafka.consumer.auto.offset.reset);
-        props.put("zookeeper.connection.timeout.ms", this.zookeeper_timeout.toString());
+        props.put("auto.offset.reset", this.autoOffsetReset);
+        props.put("zookeeper.connection.timeout.ms", this.zookeeper_timeout);
+        props.put("auto.commit.interval.ms", this.autoCommitIntervalMs);
         props.put("group.id", this.groupName);
-
         //==============
         ConsumerConfig consumerConfig = new ConsumerConfig(props);
         ConsumerConnector consumerConnector = Consumer.createJavaConsumerConnector(consumerConfig);
-
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         String topicName = this.topicName;
         map.put(topicName, this.consumerNumber);
-        Map<String, List<KafkaStream<byte[], byte[]>>> topicMessageStreams = consumerConnector.createMessageStreams(map);
-
+        //TopicFilter topicFilter = new Whitelist(".*");
+        //List<KafkaStream<byte[], byte[]>> streamList = consumerConnector.createMessageStreamsByFilter(topicFilter, 20);
+        Map<String,List<KafkaStream<byte[], byte[]>>> topicMessageStreams = consumerConnector.createMessageStreams(map);
         // 获取并启动消费线程，注意看关键就在这里，一个消费线程可以负责消费一个topic中的多个partition
         // 但是一个partition只能分配到一个消费者线程
         List<KafkaStream<byte[], byte[]>> streamList = topicMessageStreams.get(topicName);
@@ -108,58 +113,34 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
         }
     }
 
-    /**
-     * @return the zookeeper_connects
-     */
     public String getZookeeper_connects() {
         return zookeeper_connects;
     }
 
-    /**
-     * @param zookeeper_connects the zookeeper_connects to set
-     */
     public void setZookeeper_connects(String zookeeper_connects) {
         this.zookeeper_connects = zookeeper_connects;
     }
 
-    /**
-     * @return the zookeeper_timeout
-     */
-    public Long getZookeeper_timeout() {
+    public String getZookeeper_timeout() {
         return zookeeper_timeout;
     }
 
-    /**
-     * @param zookeeper_timeout the zookeeper_timeout to set
-     */
-    public void setZookeeper_timeout(Long zookeeper_timeout) {
+    public void setZookeeper_timeout(String zookeeper_timeout) {
         this.zookeeper_timeout = zookeeper_timeout;
     }
 
-    /**
-     * @return the consumerNumber
-     */
     public Integer getConsumerNumber() {
         return consumerNumber;
     }
 
-    /**
-     * @param consumerNumber the consumerNumber to set
-     */
     public void setConsumerNumber(Integer consumerNumber) {
         this.consumerNumber = consumerNumber;
     }
 
-    /**
-     * @return the consumerPool
-     */
     public ThreadPoolExecutor getConsumerPool() {
         return consumerPool;
     }
 
-    /**
-     * @param consumerPool the consumerPool to set
-     */
     public void setConsumerPool(ThreadPoolExecutor consumerPool) {
         this.consumerPool = consumerPool;
     }
@@ -178,5 +159,21 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getAutoOffsetReset() {
+        return autoOffsetReset;
+    }
+
+    public void setAutoOffsetReset(String autoOffsetReset) {
+        this.autoOffsetReset = autoOffsetReset;
+    }
+
+    public String getAutoCommitIntervalMs() {
+        return autoCommitIntervalMs;
+    }
+
+    public void setAutoCommitIntervalMs(String autoCommitIntervalMs) {
+        this.autoCommitIntervalMs = autoCommitIntervalMs;
     }
 }

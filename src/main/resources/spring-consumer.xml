@@ -6,7 +6,7 @@
 
 
     <context:property-placeholder location="kafka.properties" ignore-unresolvable="true"/>
-
+    <context:property-placeholder location="mongodb.properties" ignore-unresolvable="true"/>
     <!-- 消费者启动器 -->
     <bean id="kafkaConsumerLauncher" class="com.kafka.consumer.KafkaConsumerLauncher" scope="singleton">
         <property name="consumerNumber" value="${kafka.consumer.consumerNumber}"/>
@@ -15,6 +15,8 @@
         <property name="zookeeper_timeout" value="${kafka.consumer.zookeeper_timeout}"/>
         <property name="topicName" value="${kafka.consumer.topicName}"/>
         <property name="groupName" value="${kafka.consumer.groupName}"/>
+        <property name="autoCommitIntervalMs" value="${kafka.consumer.auto.commit.interval.ms}"/>
+        <property name="autoOffsetReset" value="${kafka.consumer.auto.offset.reset}"/>
     </bean>
 
     <!--
@@ -39,5 +41,8 @@
    消费者启动线程
    一定注意：prototype属性值，它代表着每次getBean就创建一个新的ConsumerThread对象
    -->
-    <bean id="consumerThread" class="com.kafka.consumer.thread.ConsumerThread" scope="prototype"/>
+    <bean id="consumerThread" class="com.kafka.consumer.thread.ConsumerThread" scope="prototype" init-method="init">
+        <property name="dbName" value="${mongo.db_name}"/>
+        <property name="collName" value="${mongo.coll_name}"/>
+    </bean>
 </beans>

@@ -1,6 +1,7 @@
 package com.kafka.producer.thread;
 
 import com.kafka.producer.service.impl.ProducerServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -10,28 +11,30 @@ import java.util.Date;
  */
 public class ProducerThread implements Runnable {
 
-    private Logger log = Logger.getLogger(ProducerThread.class);
+    private static Logger log = Logger.getLogger(ProducerThread.class);
 
     private ProducerServiceImpl producerServiceImpl;
 
     private String message;
 
-    private int sleepTime;
+    private Integer sleepTime;
+
+    private Integer partitionNum;
 
 
     public void run() {
         int index = 0;
         log.info("=================================   " + Thread.currentThread().getName() + "  run");
-        while(true) {
-            this.producerServiceImpl.sendeMessage(index % 50,Thread.currentThread().getName() + "--->" +new Date().toString());
+        while (true) {
+            this.producerServiceImpl.sendMessage(index % partitionNum, Thread.currentThread().getName() + "--->" + System.nanoTime());
             try {
-                log.info("=================================sleep 3 second");
+                log.info("=================================sleep " + sleepTime + "ms");
                 Thread.sleep(this.sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             index++;
-            log.info("=================================" + index);
+            log.info("================================= " + index);
         }
     }
 
@@ -57,5 +60,13 @@ public class ProducerThread implements Runnable {
 
     public void setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
+    }
+
+    public int getPartitionNum() {
+        return partitionNum;
+    }
+
+    public void setPartitionNum(int partitionNum) {
+        this.partitionNum = partitionNum;
     }
 }

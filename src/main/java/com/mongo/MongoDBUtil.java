@@ -65,8 +65,9 @@ public enum MongoDBUtil {
         addresses.add(address2);
         addresses.add(address3);
 
-        instance.mongoClient = new MongoClient(addresses);
-
+        //instance.mongoClient = new MongoClient(addresses);
+        //本地测试
+        instance.mongoClient = new MongoClient(config.getString("mongo.host"),config.getInt("mongo.port"));
         // or, to connect to a replica set, with auto-discovery of the primary, supply a seed list of members
         // List<ServerAddress> listHost = Arrays.asList(new ServerAddress("localhost", 27017),new ServerAddress("localhost", 27018));
         // instance.mongoClient = new MongoClient(listHost);

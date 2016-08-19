@@ -1,6 +1,7 @@
 package com.kafka.producer.service.impl;
 
 import com.kafka.producer.service.ProducerSevice;
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,71 +13,60 @@ import java.util.Properties;
  * Created by hjl on 2016/8/4.
  */
 
-public class ProducerServiceImpl implements ProducerSevice{
-    /**
-     * kafka的brokers列表
-     */
+public class ProducerServiceImpl implements ProducerSevice {
+
 
     private static Logger log = Logger.getLogger(ProducerServiceImpl.class);
 
+    /**
+     * kafka的brokers列表
+     */
     private String brokers;
 
     /**
-     * acks的值，只能有三种-1、0还有1
+     * acks的值，只能有三种-1、0还有all
      */
-    private String required_acks = "0";
+    private String required_acks;
 
     /**
-     * 请求超时间，默认为1000l
-     */
-    private Long request_timeout = 1000l;
-
-    /**
-     * kafka主服务对象
-     */
-    private Producer<String,String> producer;
-
-    /**
-     * 分区数量
-     */
-    //private Integer partitionNumber;
-
-    /**
-     *
+     * topic
      */
     private String topicName;
 
     /**
-     *
+     * 重试次数
      */
-    private String producerType;
-
-    /**
-     *
-     */
-
     private Integer retries;
 
     /**
-     *
+     * batchSize
      */
     private Integer batchSize;
 
     /**
-     *
+     * 缓存容量 bytes
      */
     private Integer bufferMemory;
 
     /**
-     *
+     * lingerMs
+     */
+    private Integer lingerMs;
+
+    /**
+     * keySerializer
      */
     private String keySerializer;
 
     /**
-     *
+     * valueSerializer
      */
     private String valueSerializer;
 
+    /**
+     * kafka主服务对象
+     */
+    private Producer<String, String> producer;
 
     /* (non-Javadoc)
      * @see test.interrupter.producer.ProducerServiceImpl#init()
@@ -84,126 +74,110 @@ public class ProducerServiceImpl implements ProducerSevice{
     public void init() {
         // 验证所有必要属性都已设置
 
-        log.info("===================>>>>>>>             ProducerServiceImpl  init");
-//        if (StringUtils.isEmpty(this.brokers)) {
-//            throw new RuntimeException("至少需要指定一个broker的位置");
-//        }
-//        if (this.required_acks != 0 && this.required_acks != 1
-//                && this.required_acks != -1) {
-//            throw new RuntimeException("错误的required_acks值！");
-//        }
-//        if (this.partitionNumber <= 0) {
-//            throw new RuntimeException("partitionNumber至少需要有1个");
-//        }
+        log.info("+++++++++++++++++++++++>>>>>>>             ProducerServiceImpl  init");
 
+        if (StringUtils.isEmpty(this.brokers)) {
+            throw new RuntimeException("至少需要指定一个broker的位置");
+        }
 
+        if (!this.required_acks.equals("0") && !this.required_acks.equals("1")
+                && !this.required_acks.equals("all")) {
+            throw new RuntimeException("错误的required_acks值 ");
+        }
+
+        if (StringUtils.isEmpty(this.topicName)) {
+            throw new RuntimeException("topicName 不能为空  ");
+        }
+
+        if (StringUtils.isEmpty(this.valueSerializer)) {
+            throw new RuntimeException("value.serializer 不能为空  ");
+        }
+
+        if (StringUtils.isEmpty(this.keySerializer)) {
+            throw new RuntimeException("key.serializer 不能为空  ");
+        }
 
         Properties props = new Properties();
         props.put("bootstrap.servers", this.brokers);
         props.put("acks", this.required_acks); //ack方式，all，会等所有的commit最慢的方式
-        props.put("retries", this.retries); //失败是否重试，设置会有可能产生重复数据
-        props.put("batch.size", this.batchSize); //对于每个partition的batch buffer大小
-        //props.put("linger.ms", 1);  //等多久，如果buffer没满，比如设为1，即消息发送会多1ms的延迟，如果buffer没满
-        props.put("buffer.memory", this.bufferMemory); //整个producer可以用于buffer的内存大小
+
+        if (StringUtils.isNotEmpty(this.retries.toString())) {
+            props.put("retries", this.retries); //失败是否重试，设置会有可能产生重复数据
+        }
+
+        if (null != this.batchSize) {
+            props.put("batch.size", this.batchSize); //对于每个partition的batch buffer大小
+        }
+
+        if (null != this.lingerMs) {
+            props.put("linger.ms", this.lingerMs);  //等多久，如果buffer没满，比如设为1，即消息发送会多1ms的延迟，如果buffer没满
+        }
+
+        if (null != this.bufferMemory) {
+            props.put("buffer.memory", this.bufferMemory); //整个producer可以用于buffer的内存大小
+        }
+
         props.put("key.serializer", this.keySerializer);
         props.put("value.serializer", this.valueSerializer);
-
-        this.producer = new KafkaProducer<String,String>(props);
-
+        this.producer = new KafkaProducer<String, String>(props);
 
     }
 
     /* (non-Javadoc)
      * @see test.interrupter.producer.ProducerServiceImpl#senderMessage(java.lang.String)
      */
-    public void sendeMessage(int index,String message) {
+    public void sendMessage(int partition, String key, String value) {
         // 创建和发送消息
-        ProducerRecord<String,String> producerRecord = new ProducerRecord<String, String>(this.topicName,index,message,message);
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, partition, key, value);
         this.producer.send(producerRecord);
-        log.info("===================================>>>>>>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + message);
+        log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
     }
 
-    public void destroy(){
+    public void sendMessage(int partition, String value){
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, partition,value, value);
+        this.producer.send(producerRecord);
+        log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+    }
+
+    public void sendMessage(String key , String value){
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, key, value);
+        this.producer.send(producerRecord);
+        log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+    }
+
+    public void sendMessage(String value) {
+        // 创建和发送消息
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName,value, value);
+        this.producer.send(producerRecord);
+        log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+    }
+
+    public void destroy() {
         this.producer.close();
     }
-    /**
-     * @return the brokers
-     */
+
     public String getBrokers() {
         return brokers;
     }
 
-    /**
-     * @param brokers the brokers to set
-     */
     public void setBrokers(String brokers) {
         this.brokers = brokers;
     }
 
-    /**
-     * @return the required_acks
-     */
     public String getRequired_acks() {
         return required_acks;
     }
 
-    /**
-     * @param required_acks the required_acks to set
-     */
     public void setRequired_acks(String required_acks) {
         this.required_acks = required_acks;
     }
 
-    /**
-     * @return the request_timeout
-     */
-    public Long getRequest_timeout() {
-        return request_timeout;
+    public String getTopicName() {
+        return topicName;
     }
-
-    /**
-     * @param request_timeout the request_timeout to set
-     */
-    public void setRequest_timeout(Long request_timeout) {
-        this.request_timeout = request_timeout;
-    }
-
-    /**
-     * @return the partitionNumber
-     */
-//    public Integer getPartitionNumber() {
-//        return partitionNumber;
-//    }
-
-    /**
-     * 
-     */
-//    public void setPartitionNumber(Integer partitionNumber) {
-//        this.partitionNumber = partitionNumber;
-//    }
 
     public void setTopicName(String topicName) {
         this.topicName = topicName;
-    }
-
-    public String getTopicName(){
-        return this.topicName;
-    }
-
-    public String getProducerType() {
-        return producerType;
-    }
-
-    public void setProducerType(String producerType) {
-        this.producerType = producerType;
-    }
-
-    public Producer<String, String> getProducer() {
-        return producer;
-    }
-
-    public void setProducer(Producer<String, String> producer) {
-        this.producer = producer;
     }
 
     public Integer getRetries() {
@@ -214,6 +188,14 @@ public class ProducerServiceImpl implements ProducerSevice{
         this.retries = retries;
     }
 
+    public Integer getBufferMemory() {
+        return bufferMemory;
+    }
+
+    public void setBufferMemory(Integer bufferMemory) {
+        this.bufferMemory = bufferMemory;
+    }
+
     public Integer getBatchSize() {
         return batchSize;
     }
@@ -222,12 +204,12 @@ public class ProducerServiceImpl implements ProducerSevice{
         this.batchSize = batchSize;
     }
 
-    public Integer getBufferMemory() {
-        return bufferMemory;
+    public Integer getLingerMs() {
+        return lingerMs;
     }
 
-    public void setBufferMemory(Integer bufferMemory) {
-        this.bufferMemory = bufferMemory;
+    public void setLingerMs(Integer lingerMs) {
+        this.lingerMs = lingerMs;
     }
 
     public String getKeySerializer() {

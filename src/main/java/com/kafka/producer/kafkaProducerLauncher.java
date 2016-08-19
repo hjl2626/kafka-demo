@@ -29,7 +29,7 @@ public class kafkaProducerLauncher implements ApplicationListener<ContextRefresh
     private void startProduce(ApplicationContext ac){
         for(int i=0; i<producerNum; i++){
             ProducerThread producerThread = (ProducerThread) ac.getBean("producerThread");
-            producerThread.setMessage(""+System.nanoTime()+"你好produce");
+            producerThread.setMessage("");
             this.producerPool.submit(producerThread);
         }
 

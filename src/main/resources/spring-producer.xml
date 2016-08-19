@@ -16,7 +16,6 @@
         <!--<property name="partitionNumber" value="${kafka.producer.partitionNumber}"/>-->
         <property name="required_acks" value="${kafka.producer.required_acks}"/>
         <property name="topicName" value="${kafka.producer.topicName}"/>
-        <property name="producerType" value="${kafka.producer.producerType}"/>
         <property name="batchSize"  value="${kafka.producer.batchSize}"/>
         <property name="bufferMemory" value="${kafka.producer.bufferMemory}"/>
         <property name="keySerializer" value="${kafka.producer.keySerializer}"/>
@@ -28,7 +27,8 @@
     <bean id="producerThread" class="com.kafka.producer.thread.ProducerThread" scope="prototype">
         <!--<property name="message" value="${kafka.producer.message}"/>-->
         <property name="producerServiceImpl" ref="producerService"/>
-        <property name="sleepTime" value="100" />
+        <property name="sleepTime" value="10000" />
+        <property name="partitionNum" value="${kafka.producer.partitionNumber}"/>
      </bean>
 
     <!--
