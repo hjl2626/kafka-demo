@@ -1,11 +1,16 @@
 package com.mongo;
 
+import com.mongodb.client.DistinctIterable;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +31,12 @@ public class MongoDBUtilTest {
 
     @Test
     public void test(){
-        MongoDBUtil.instance.getDB("mongodb-test");
-        System.out.print(MongoDBUtil.instance.getAllCollections("mongodb-test"));
+        MongoCollection coll = MongoDBUtil.instance.getCollection("mongodb-test","logs");
+        MongoCursor<Document> cur = coll.find().iterator();
+        while(cur.hasNext()){
+           Document _doc = cur.next();
+            System.out.print(_doc);
+        }
 
     }
 
