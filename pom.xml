@@ -6,11 +6,7 @@
 
     <groupId>com.chinamobile.iot</groupId>
     <artifactId>kafka-consumer</artifactId>
-    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>../Interceptors</module>
-    </modules>
 
 
     <properties>
@@ -79,7 +75,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>${mongo-java-driver}</version>
+            <version>${mongo-java-driver.version}</version>
         </dependency>
 
         <dependency>
