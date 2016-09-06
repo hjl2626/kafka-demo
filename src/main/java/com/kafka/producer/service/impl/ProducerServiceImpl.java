@@ -5,9 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
 
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 /**
  * Created by hjl on 2016/8/4.
@@ -126,105 +128,127 @@ public class ProducerServiceImpl implements ProducerSevice {
     /* (non-Javadoc)
      * @see test.interrupter.producer.ProducerServiceImpl#senderMessage(java.lang.String)
      */
-    public void sendMessage(int partition, String key, String value) {
+    public Future<RecordMetadata> sendMessage(int partition, String key, String value) {
         // 创建和发送消息
         ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, partition, key, value);
-        this.producer.send(producerRecord);
         log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+        return this.producer.send(producerRecord);
+
     }
 
-    public void sendMessage(int partition, String value){
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, partition,value, value);
-        this.producer.send(producerRecord);
+    public Future<RecordMetadata> sendMessage(int partition, String value) {
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, partition, value, value);
         log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+        return this.producer.send(producerRecord);
+
     }
 
-    public void sendMessage(String key , String value){
+    public Future<RecordMetadata> sendMessage(String key, String value) {
         ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, key, value);
-        this.producer.send(producerRecord);
         log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+        return this.producer.send(producerRecord);
+
     }
 
-    public void sendMessage(String value) {
+    public Future<RecordMetadata> sendMessage(String value) {
         // 创建和发送消息
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName,value, value);
-        this.producer.send(producerRecord);
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(this.topicName, value, value);
         log.info("+++++++++++++++++++++++++++++>>>>>> " + Thread.currentThread().getName() + "   发送 message= " + value);
+        return this.producer.send(producerRecord);
+
     }
 
     public void destroy() {
         this.producer.close();
     }
 
-    public String getBrokers() {
-        return brokers;
-    }
-
-    public void setBrokers(String brokers) {
-        this.brokers = brokers;
-    }
-
     public String getRequired_acks() {
         return required_acks;
     }
 
-    public void setRequired_acks(String required_acks) {
+    public ProducerServiceImpl setRequired_acks(String required_acks) {
         this.required_acks = required_acks;
+        return this;
+    }
+
+    public String getBrokers() {
+        return brokers;
+    }
+
+    public ProducerServiceImpl setBrokers(String brokers) {
+        this.brokers = brokers;
+        return this;
     }
 
     public String getTopicName() {
         return topicName;
     }
 
-    public void setTopicName(String topicName) {
+    public ProducerServiceImpl setTopicName(String topicName) {
         this.topicName = topicName;
+        return this;
     }
 
     public Integer getRetries() {
         return retries;
     }
 
-    public void setRetries(Integer retries) {
+    public ProducerServiceImpl setRetries(Integer retries) {
         this.retries = retries;
-    }
-
-    public Integer getBufferMemory() {
-        return bufferMemory;
-    }
-
-    public void setBufferMemory(Integer bufferMemory) {
-        this.bufferMemory = bufferMemory;
+        return this;
     }
 
     public Integer getBatchSize() {
         return batchSize;
     }
 
-    public void setBatchSize(Integer batchSize) {
+    public ProducerServiceImpl setBatchSize(Integer batchSize) {
         this.batchSize = batchSize;
+        return this;
     }
 
     public Integer getLingerMs() {
         return lingerMs;
     }
 
-    public void setLingerMs(Integer lingerMs) {
+    public ProducerServiceImpl setLingerMs(Integer lingerMs) {
         this.lingerMs = lingerMs;
+        return this;
+    }
+
+    public Integer getBufferMemory() {
+        return bufferMemory;
+    }
+
+    public ProducerServiceImpl setBufferMemory(Integer bufferMemory) {
+        this.bufferMemory = bufferMemory;
+        return this;
     }
 
     public String getKeySerializer() {
         return keySerializer;
     }
 
-    public void setKeySerializer(String keySerializer) {
+    public ProducerServiceImpl setKeySerializer(String keySerializer) {
         this.keySerializer = keySerializer;
+        return this;
     }
 
     public String getValueSerializer() {
         return valueSerializer;
     }
 
-    public void setValueSerializer(String valueSerializer) {
+    public ProducerServiceImpl setValueSerializer(String valueSerializer) {
         this.valueSerializer = valueSerializer;
+        return this;
+    }
+
+    public Producer<String, String> getProducer() {
+        return producer;
+    }
+
+    public ProducerServiceImpl setProducer(Producer<String, String> producer) {
+        this.producer = producer;
+        return this;
     }
 }

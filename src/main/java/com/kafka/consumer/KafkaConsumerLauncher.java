@@ -92,12 +92,13 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
         //==============
         ConsumerConfig consumerConfig = new ConsumerConfig(props);
         ConsumerConnector consumerConnector = Consumer.createJavaConsumerConnector(consumerConfig);
+        log.info("kafka config :" + consumerConfig);
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         String topicName = this.topicName;
         map.put(topicName, this.consumerNumber);
         //TopicFilter topicFilter = new Whitelist(".*");
         //List<KafkaStream<byte[], byte[]>> streamList = consumerConnector.createMessageStreamsByFilter(topicFilter, 20);
-        Map<String,List<KafkaStream<byte[], byte[]>>> topicMessageStreams = consumerConnector.createMessageStreams(map);
+        Map<String, List<KafkaStream<byte[], byte[]>>> topicMessageStreams = consumerConnector.createMessageStreams(map);
         // 获取并启动消费线程，注意看关键就在这里，一个消费线程可以负责消费一个topic中的多个partition
         // 但是一个partition只能分配到一个消费者线程
         List<KafkaStream<byte[], byte[]>> streamList = topicMessageStreams.get(topicName);
@@ -117,63 +118,71 @@ public class KafkaConsumerLauncher implements ApplicationListener<ContextRefresh
         return zookeeper_connects;
     }
 
-    public void setZookeeper_connects(String zookeeper_connects) {
+    public KafkaConsumerLauncher setZookeeper_connects(String zookeeper_connects) {
         this.zookeeper_connects = zookeeper_connects;
+        return this;
     }
 
     public String getZookeeper_timeout() {
         return zookeeper_timeout;
     }
 
-    public void setZookeeper_timeout(String zookeeper_timeout) {
+    public KafkaConsumerLauncher setZookeeper_timeout(String zookeeper_timeout) {
         this.zookeeper_timeout = zookeeper_timeout;
+        return this;
     }
 
     public Integer getConsumerNumber() {
         return consumerNumber;
     }
 
-    public void setConsumerNumber(Integer consumerNumber) {
+    public KafkaConsumerLauncher setConsumerNumber(Integer consumerNumber) {
         this.consumerNumber = consumerNumber;
+        return this;
     }
 
     public ThreadPoolExecutor getConsumerPool() {
         return consumerPool;
     }
 
-    public void setConsumerPool(ThreadPoolExecutor consumerPool) {
+    public KafkaConsumerLauncher setConsumerPool(ThreadPoolExecutor consumerPool) {
         this.consumerPool = consumerPool;
+        return this;
     }
 
     public String getTopicName() {
         return topicName;
     }
 
-    public void setTopicName(String topicName) {
+    public KafkaConsumerLauncher setTopicName(String topicName) {
         this.topicName = topicName;
+        return this;
     }
 
     public String getGroupName() {
         return groupName;
     }
 
-    public void setGroupName(String groupName) {
+    public KafkaConsumerLauncher setGroupName(String groupName) {
         this.groupName = groupName;
-    }
-
-    public String getAutoOffsetReset() {
-        return autoOffsetReset;
-    }
-
-    public void setAutoOffsetReset(String autoOffsetReset) {
-        this.autoOffsetReset = autoOffsetReset;
+        return this;
     }
 
     public String getAutoCommitIntervalMs() {
         return autoCommitIntervalMs;
     }
 
-    public void setAutoCommitIntervalMs(String autoCommitIntervalMs) {
+    public KafkaConsumerLauncher setAutoCommitIntervalMs(String autoCommitIntervalMs) {
         this.autoCommitIntervalMs = autoCommitIntervalMs;
+        return this;
+    }
+
+    public String getAutoOffsetReset() {
+        return autoOffsetReset;
+    }
+
+    public KafkaConsumerLauncher setAutoOffsetReset(String autoOffsetReset) {
+        this.autoOffsetReset = autoOffsetReset;
+        return this;
     }
 }

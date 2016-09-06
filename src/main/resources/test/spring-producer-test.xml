@@ -5,6 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
+    <context:property-placeholder location="classpath*:log4j.properties" ignore-unresolvable="true"/>
+
+    <context:property-placeholder location="classpath*:mongodb.properties" ignore-unresolvable="true"/>
 
     <context:property-placeholder location="classpath*:kafka.properties" ignore-unresolvable="true"/>
 
@@ -13,10 +16,8 @@
 
     <bean id="producerService" class="com.kafka.producer.service.impl.ProducerServiceImpl" init-method="init" destroy-method="destroy" scope="singleton">
         <property name="brokers" value="${kafka.producer.brokers}"/>
-        <!--<property name="partitionNumber" value="${kafka.producer.partitionNumber}"/>-->
         <property name="required_acks" value="${kafka.producer.required_acks}"/>
         <property name="topicName" value="${kafka.producer.topicName}"/>
-        <property name="producerType" value="${kafka.producer.producerType}"/>
         <property name="batchSize"  value="${kafka.producer.batchSize}"/>
         <property name="bufferMemory" value="${kafka.producer.bufferMemory}"/>
         <property name="keySerializer" value="${kafka.producer.keySerializer}"/>
@@ -28,6 +29,8 @@
     <bean id="producerThread" class="com.kafka.producer.thread.ProducerThread" scope="prototype">
         <!--<property name="message" value="${kafka.producer.message}"/>-->
         <property name="producerServiceImpl" ref="producerService"/>
+        <property name="partitionNum" value="${kafka.producer.partitionNumber}"/>
+        <property name="sleepTime" value="100"/>
      </bean>
 
     <!--

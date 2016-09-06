@@ -1,6 +1,7 @@
 package com.kafka.producer;
 
 import com.kafka.producer.thread.ProducerThread;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,6 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class kafkaProducerLauncher implements ApplicationListener<ContextRefreshedEvent> {
 
+    private Logger logger = Logger.getLogger(kafkaProducerLauncher.class);
 
     private ThreadPoolExecutor producerPool;
 
@@ -39,15 +41,17 @@ public class kafkaProducerLauncher implements ApplicationListener<ContextRefresh
         return producerNum;
     }
 
-    public void setProducerNum(int producerNum) {
+    public kafkaProducerLauncher setProducerNum(int producerNum) {
         this.producerNum = producerNum;
+        return this;
     }
 
     public ThreadPoolExecutor getProducerPool() {
         return producerPool;
     }
 
-    public void setProducerPool(ThreadPoolExecutor producerPool) {
+    public kafkaProducerLauncher setProducerPool(ThreadPoolExecutor producerPool) {
         this.producerPool = producerPool;
+        return this;
     }
 }

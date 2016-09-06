@@ -41,7 +41,7 @@
    消费者启动线程
    一定注意：prototype属性值，它代表着每次getBean就创建一个新的ConsumerThread对象
    -->
-    <bean id="consumerThread" class="com.kafka.consumer.thread.ConsumerThread" scope="prototype" init-method="init">
+    <bean id="consumerThread" class="com.kafka.consumer.thread.ConsumerThread" scope="prototype">
         <property name="dbName" value="${mongo.db_name}"/>
         <property name="collName" value="${mongo.coll_name}"/>
     </bean>

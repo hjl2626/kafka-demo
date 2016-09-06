@@ -15,6 +15,6 @@ public class ConsumerMain {
 
     public static void main(String[] args) {
         log.info("==============================>>>>>>>>>        consumer run");
-        ApplicationContext app = new ClassPathXmlApplicationContext("classpath:test/spring-config-test.xml");
+        ApplicationContext app = new ClassPathXmlApplicationContext("classpath:test/spring-consumer-test.xml");
     }
 }

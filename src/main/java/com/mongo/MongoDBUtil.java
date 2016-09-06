@@ -27,7 +27,7 @@ import com.mongodb.client.result.DeleteResult;
  * Mongo有个内置的连接池（默认为10个） 对于有大量写和读的环境中，为了确保在一个Session中使用同一个DB时，<br>
  * DB和DBCollection是绝对线程安全的<br>
  *
- * @author zhoulingfei
+ * @author
  * @version 0.0.0
  * @date 2015-5-29 上午11:49:49
  * @Copyright (c)1997-2015 NavInfo Co.Ltd. All Rights Reserved.

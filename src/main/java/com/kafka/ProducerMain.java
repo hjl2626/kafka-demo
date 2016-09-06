@@ -15,6 +15,6 @@ public class ProducerMain {
 
     public static void main(String[] args) {
         log.info("==============================>>>>>>>>>       producer run");
-        ApplicationContext app = new ClassPathXmlApplicationContext("classpath:spring-config.xml");
+        ApplicationContext app = new ClassPathXmlApplicationContext("classpath:test/spring-producer-test.xml");
     }
 }
